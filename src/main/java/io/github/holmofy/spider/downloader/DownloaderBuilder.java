@@ -19,10 +19,14 @@ public class DownloaderBuilder {
         } else {
             requestFactory = new SimpleClientHttpRequestFactory();
         }
-        return SimpleHttpDownloader.builder()
+        return simpleBuilder()
                 .config(DownloaderConfig.DEFAULT)
                 .requestFactory(requestFactory)
                 .build();
+    }
+
+    public SimpleHttpDownloader.SimpleHttpDownloaderBuilder simpleBuilder() {
+        return SimpleHttpDownloader.builder();
     }
 
 }
