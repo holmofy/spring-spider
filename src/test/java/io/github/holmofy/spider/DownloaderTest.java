@@ -7,9 +7,10 @@ import java.util.List;
 
 public class DownloaderTest {
 
+    Downloader downloader = Downloader.builder().simple();
+
     @Test
     public void test_jsonpath() {
-        Downloader downloader = Downloader.builder().simple();
         String current_user_url = downloader.download(CrawlerRequest.get("https://api.github.com/").build())
                 .jsonPath()
                 .read("$.current_user_url");
@@ -18,7 +19,6 @@ public class DownloaderTest {
 
     @Test
     public void test_jsoup() {
-        Downloader downloader = Downloader.builder().simple();
         List<String> repos = downloader.download(CrawlerRequest.get("https://github.com/search?q=spider").build())
                 .jsoup()
                 .select("div.application-main ul.repo-list > li > div.mt-n1.flex-auto > div.d-flex > div > a")
@@ -29,7 +29,6 @@ public class DownloaderTest {
 
     @Test
     public void test_xpath() {
-        Downloader downloader = Downloader.builder().simple();
         String location = downloader.download(CrawlerRequest.get("https://www.douban.com/sitemap_index.xml").build())
                 .xPath()
                 .select("/sitemapindex/sitemap/loc")
