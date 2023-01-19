@@ -3,7 +3,6 @@ package io.github.holmofy.spider.downloader;
 import io.github.holmofy.spider.CrawlerRequest;
 import io.github.holmofy.spider.CrawlerResponse;
 import io.github.holmofy.spider.Downloader;
-import lombok.Builder;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpRequest;
@@ -13,12 +12,16 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 
-@Builder
 public class SimpleHttpDownloader implements Downloader {
 
     protected DownloaderConfig config;
 
     protected ClientHttpRequestFactory requestFactory;
+
+    private SimpleHttpDownloader(DownloaderConfig config, ClientHttpRequestFactory requestFactory) {
+        this.config = config;
+        this.requestFactory = requestFactory;
+    }
 
     @SneakyThrows
     public CrawlerResponse download(CrawlerRequest request) {
@@ -51,5 +54,31 @@ public class SimpleHttpDownloader implements Downloader {
                 .body(response.getBody().readAllBytes())
                 .realUrl(request.getURI())
                 .build();
+    }
+
+    public static class SimpleHttpDownloaderBuilder {
+        private DownloaderConfig config;
+        private ClientHttpRequestFactory requestFactory;
+
+        private SimpleHttpDownloaderBuilder() {
+        }
+
+        public SimpleHttpDownloader.SimpleHttpDownloaderBuilder config(final DownloaderConfig config) {
+            this.config = config;
+            return this;
+        }
+
+        public SimpleHttpDownloader.SimpleHttpDownloaderBuilder requestFactory(final ClientHttpRequestFactory requestFactory) {
+            this.requestFactory = requestFactory;
+            return this;
+        }
+
+        public SimpleHttpDownloader build() {
+            return new SimpleHttpDownloader(this.config, this.requestFactory);
+        }
+    }
+
+    public static SimpleHttpDownloader.SimpleHttpDownloaderBuilder builder() {
+        return new SimpleHttpDownloader.SimpleHttpDownloaderBuilder();
     }
 }

@@ -83,16 +83,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok-maven-plugin</artifactId>
-                <version>1.18.20.0</version>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                    <sourceDirectory>src/main/java</sourceDirectory>
-                    <outputDirectory>target/generated-sources/delombok</outputDirectory>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <executions>
@@ -107,9 +97,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <sourcepath>target/generated-sources/delombok</sourcepath>
-                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>
