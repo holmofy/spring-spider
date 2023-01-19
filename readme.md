@@ -1,3 +1,5 @@
+[![Build Status(https://github.com/holmofy/spring-spider/actions/workflows/package.yaml/badge.svg)](https://github.com/holmofy/spring-spider/actions/workflows/package.yaml/badge.svg)](https://repo1.maven.org/maven2/io/github/holmofy/spring-spider)
+
 Spring Spider App Utility Library.
 
 ## how to use
