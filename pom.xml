@@ -8,7 +8,7 @@
     <artifactId>spring-spider</artifactId>
     <version>1.0</version>
 
-    <name>spring-data-jdbc-criteria</name>
+    <name>spring-spider</name>
     <description>Spring Spider App Utility Library.</description>
     <url>https://github.com/holmofy/spring-spider</url>
     <licenses>
@@ -82,6 +82,16 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-maven-plugin</artifactId>
+                <version>1.18.20.0</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <sourceDirectory>src/main/java</sourceDirectory>
+                    <outputDirectory>target/generated-sources/delombok</outputDirectory>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
