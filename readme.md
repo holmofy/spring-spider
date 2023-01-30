@@ -4,8 +4,8 @@ Spring Spider App Utility Library.
 
 # road map
 
-[x] support jsonpath & jsoup & xpath
-[] Integrate playwright to support pages included js, such as single-page application
+* [x] support jsonpath & jsoup & xpath
+* [ ] Integrate playwright to support pages included js, such as single-page application
 
 ## how to use
 
