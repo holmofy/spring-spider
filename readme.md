@@ -14,7 +14,7 @@ Spring Spider App Utility Library.
 <dependency>
     <groupId>io.github.holmofy</groupId>
     <artifactId>spring-spider</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 2. support jsonpath & Jsoup & Xpath
