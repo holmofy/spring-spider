@@ -2,10 +2,10 @@
 
 Spring Spider App Utility Library.
 
-# road map
+# feature
 
 * [x] support jsonpath & jsoup & xpath
-* [ ] Integrate [playwright](https://github.com/microsoft/playwright-java) to support pages included js, such as single-page application
+* [x] Integrate [playwright](https://github.com/microsoft/playwright-java) to support pages included js, such as single-page application
 
 ## how to use
 

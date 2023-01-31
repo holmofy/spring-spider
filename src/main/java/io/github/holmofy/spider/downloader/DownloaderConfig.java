@@ -22,6 +22,8 @@ public class DownloaderConfig {
         return config;
     }
 
-    private HttpHeaders headers;
+    private int retryCount;
+
+    private HttpHeaders headers = HttpHeaders.EMPTY;
 
 }
