@@ -10,13 +10,15 @@ Spring Spider App Utility Library.
 ## how to use
 
 1. add dependency
+
 ```xml
 <dependency>
     <groupId>io.github.holmofy</groupId>
     <artifactId>spring-spider</artifactId>
-    <version>1.1</version>
+    <version>1.1.1</version>
 </dependency>
 ```
+
 2. support jsonpath & Jsoup & Xpath
 ```java
 @Test

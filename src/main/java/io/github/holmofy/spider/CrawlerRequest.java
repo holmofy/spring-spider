@@ -7,6 +7,9 @@ import org.springframework.http.HttpMethod;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.util.Map;
+
+import static java.util.Collections.singletonList;
 
 @Getter
 public class CrawlerRequest implements Serializable {
@@ -67,6 +70,12 @@ public class CrawlerRequest implements Serializable {
 
         public CrawlerRequestBuilder headers(HttpHeaders headers) {
             this.headers = headers;
+            return this;
+        }
+
+        public CrawlerRequestBuilder headers(Map<String, String> headers) {
+            this.headers = this.headers == null ? new HttpHeaders() : this.headers;
+            headers.forEach((k, v) -> this.headers.put(k, singletonList(v)));
             return this;
         }
 
