@@ -1,9 +1,6 @@
 package io.github.holmofy.spider.downloader;
 
-import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.BrowserType.LaunchOptions;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Route;
+import com.microsoft.playwright.*;
 import io.github.holmofy.spider.CrawlerRequest;
 import io.github.holmofy.spider.CrawlerResponse;
 import io.github.holmofy.spider.Downloader;
@@ -24,15 +21,17 @@ public class PlaywrightDownloader implements Downloader {
 
     @Override
     public CrawlerResponse download(CrawlerRequest request) {
-        try (BrowserCrawler browser = new BrowserCrawler(BrowserCrawlerType.webkit, new LaunchOptions().setHeadless(true));
+        try (Playwright playwright = Playwright.create();
+             Browser browser = playwright.webkit().launch();
              BrowserContext context = browser.newContext()) {
-            context.storageState();
             Page page = context.newPage();
             String url = request.getUri().toString();
             CrawlerResponse.CrawlerResponseBuilder response = CrawlerResponse.builder();
             AtomicBoolean isOk = new AtomicBoolean(false);
             page.onResponse(r -> {
-                log.debug("---> {} {}\n<=== {} {}", r.request().method(), r.request().url(), r.status(), r.statusText());
+                log.trace("\n---> {} {}\n<=== {} {}",
+                        r.request().method(), r.request().url(),
+                        r.status(), r.statusText());
                 if (Objects.equals(r.url(), url)) {
                     isOk.set(r.ok());
                     response.status(HttpStatus.valueOf(r.status()))
