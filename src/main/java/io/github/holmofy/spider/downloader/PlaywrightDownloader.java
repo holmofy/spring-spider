@@ -1,21 +1,20 @@
 package io.github.holmofy.spider.downloader;
 
-import com.microsoft.playwright.*;
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.BrowserType.LaunchOptions;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Route;
 import io.github.holmofy.spider.CrawlerRequest;
 import io.github.holmofy.spider.CrawlerResponse;
 import io.github.holmofy.spider.Downloader;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 
 import java.net.URI;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @AllArgsConstructor
@@ -25,10 +24,8 @@ public class PlaywrightDownloader implements Downloader {
 
     @Override
     public CrawlerResponse download(CrawlerRequest request) {
-        Playwright playwright = Playwright.create();
-        Browser browser = playwright.webkit().launch();
-        try (playwright; browser) {
-            BrowserContext context = browser.newContext();
+        try (BrowserCrawler browser = new BrowserCrawler(BrowserCrawlerType.webkit, new LaunchOptions().setHeadless(true));
+             BrowserContext context = browser.newContext()) {
             context.storageState();
             Page page = context.newPage();
             String url = request.getUri().toString();
@@ -48,7 +45,7 @@ public class PlaywrightDownloader implements Downloader {
             page.route(url, route -> {
                 Route.ResumeOptions options = new Route.ResumeOptions();
                 options.setMethod(request.getMethod().name());
-                options.setHeaders(buildHeaderMap(downloaderConfig, request.getHeaders()));
+                options.setHeaders(DownloaderConfig.buildHeaderMap(downloaderConfig, request.getHeaders()));
                 options.setPostData(request.getBody());
                 route.resume(options);
             });
@@ -69,18 +66,4 @@ public class PlaywrightDownloader implements Downloader {
         }
     }
 
-    private Map<String, String> buildHeaderMap(DownloaderConfig downloaderConfig, HttpHeaders headers) {
-        HttpHeaders defaultHeaders = downloaderConfig == null ? HttpHeaders.EMPTY : downloaderConfig.getHeaders();
-        if (headers == null) {
-            return defaultHeaders.entrySet().stream().collect(Collectors.toMap(
-                    Map.Entry::getKey,
-                    e -> String.join(";", e.getValue())
-            ));
-        }
-        return Stream.concat(defaultHeaders.entrySet().stream(), headers.entrySet().stream()).collect(Collectors.toMap(
-                Map.Entry::getKey,
-                e -> String.join(";", e.getValue()),
-                (dh1, h2) -> h2
-        ));
-    }
 }

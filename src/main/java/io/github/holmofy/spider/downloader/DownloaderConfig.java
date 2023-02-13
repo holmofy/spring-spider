@@ -5,6 +5,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import java.util.Collections;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Data
 public class DownloaderConfig {
@@ -25,5 +28,20 @@ public class DownloaderConfig {
     private int retryCount;
 
     private HttpHeaders headers = HttpHeaders.EMPTY;
+
+    static Map<String, String> buildHeaderMap(DownloaderConfig downloaderConfig, HttpHeaders headers) {
+        HttpHeaders defaultHeaders = downloaderConfig == null ? HttpHeaders.EMPTY : downloaderConfig.getHeaders();
+        if (headers == null) {
+            return defaultHeaders.entrySet().stream().collect(Collectors.toMap(
+                    Map.Entry::getKey,
+                    e -> String.join(";", e.getValue())
+            ));
+        }
+        return Stream.concat(defaultHeaders.entrySet().stream(), headers.entrySet().stream()).collect(Collectors.toMap(
+                Map.Entry::getKey,
+                e -> String.join(";", e.getValue()),
+                (dh1, h2) -> h2
+        ));
+    }
 
 }

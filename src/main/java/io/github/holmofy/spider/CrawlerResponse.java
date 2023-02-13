@@ -46,13 +46,13 @@ public class CrawlerResponse implements Serializable {
      * 请求可能被重定向了，这个字段是响应请求的真实服务器url
      */
     @Getter
-    private volatile URI realUrl;
+    private transient URI realUrl;
 
-    private volatile ReadContext jsonPath;
+    private transient ReadContext jsonPath;
 
-    private volatile Document jsoup;
+    private transient Document jsoup;
 
-    private volatile XPath xPath;
+    private transient XPath xPath;
 
     public String body() {
         return new String(body, DEFAULT_CHARSET);
