@@ -3,6 +3,9 @@ name: Maven Package
 on:
   push:
     branches: [ master ]
+    paths:
+      - 'src/**'
+      - 'pom.xml'
   workflow_dispatch:
     inputs:
 
