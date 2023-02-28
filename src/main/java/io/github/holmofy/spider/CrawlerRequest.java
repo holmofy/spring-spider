@@ -4,10 +4,14 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 
 import java.io.Serializable;
 import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Objects;
 
 import static java.util.Collections.singletonList;
 
@@ -45,6 +49,32 @@ public class CrawlerRequest implements Serializable {
         return CrawlerRequest.builder().method(HttpMethod.PUT).uri(URI.create(url));
     }
 
+    public static CrawlerRequest parseRaw(String rawRequest) {
+        rawRequest = Objects.requireNonNull(rawRequest, "rawRequest must not be null").trim();
+        int gap = rawRequest.indexOf("\n\n");
+        CrawlerRequestBuilder builder = CrawlerRequest.builder();
+        String body = gap > 0 ? rawRequest.substring(gap + 2) : null;
+        String[] lines = rawRequest.substring(0, gap + 1).split("[\r\n]+");
+        String[] requestLine = lines[0].split(" ");
+        builder.method(HttpMethod.valueOf(requestLine[0]))
+                .uri(URI.create(requestLine[1]));
+        for (int i = 1; i < lines.length; i++) {
+            String header = lines[i];
+            int colon = header.indexOf(":");
+            builder.header(header.substring(0, colon), header.substring(colon + 1).trim());
+        }
+        MediaType contentType = MediaType.TEXT_PLAIN;
+        Charset charset = StandardCharsets.UTF_8;
+        if (builder.headers != null && body != null) {
+            contentType = Objects.requireNonNullElse(builder.headers.getContentType(), contentType);
+            charset = Objects.requireNonNullElse(contentType.getCharset(), charset);
+        }
+        if (body != null) {
+            builder.body(body.getBytes(charset)).header(HttpHeaders.CONTENT_TYPE, contentType.toString());
+        }
+        return builder.build();
+    }
+
     public static CrawlerRequestBuilder builder() {
         return new CrawlerRequestBuilder();
     }
@@ -76,6 +106,12 @@ public class CrawlerRequest implements Serializable {
         public CrawlerRequestBuilder headers(Map<String, String> headers) {
             this.headers = this.headers == null ? new HttpHeaders() : this.headers;
             headers.forEach((k, v) -> this.headers.put(k, singletonList(v)));
+            return this;
+        }
+
+        public CrawlerRequestBuilder header(String key, String value) {
+            this.headers = this.headers == null ? new HttpHeaders() : this.headers;
+            headers.put(key, singletonList(value));
             return this;
         }
 

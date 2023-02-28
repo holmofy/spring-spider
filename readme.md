@@ -6,6 +6,7 @@ Spring Spider App Utility Library.
 
 * [x] support jsonpath & jsoup & xpath
 * [x] Integrate [playwright](https://github.com/microsoft/playwright-java) to support pages included js, such as single-page application
+* [x] support raw http
 
 ## how to use
 
@@ -15,7 +16,7 @@ Spring Spider App Utility Library.
 <dependency>
     <groupId>io.github.holmofy</groupId>
     <artifactId>spring-spider</artifactId>
-    <version>1.1.3</version>
+    <version>1.1.4</version>
 </dependency>
 ```
 

@@ -121,4 +121,11 @@ public class CrawlerResponse implements Serializable {
 
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder().append(status.value()).append(" ").append(statusText).append("\n");
+        headers.forEach((k, v) -> builder.append(k).append(": ").append(v).append("\n"));
+        builder.append(new String(body));
+        return builder.toString();
+    }
 }
