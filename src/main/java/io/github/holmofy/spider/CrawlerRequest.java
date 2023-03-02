@@ -61,7 +61,7 @@ public class CrawlerRequest implements Serializable {
         for (int i = 1; i < lines.length; i++) {
             String header = lines[i];
             int colon = header.indexOf(":");
-            builder.header(header.substring(0, colon), header.substring(colon + 1).trim());
+            builder.header(header.substring(0, colon).trim(), header.substring(colon + 1).trim());
         }
         MediaType contentType = MediaType.TEXT_PLAIN;
         Charset charset = StandardCharsets.UTF_8;
