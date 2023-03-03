@@ -8,6 +8,7 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -21,7 +22,6 @@ import java.io.Serializable;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 
 @Builder
 public class CrawlerResponse implements Serializable {
@@ -37,7 +37,7 @@ public class CrawlerResponse implements Serializable {
     private final String statusText;
 
     @Getter
-    private final Map<String, String> headers;
+    private final HttpHeaders headers;
 
     @Getter
     private final byte[] body;
@@ -124,7 +124,13 @@ public class CrawlerResponse implements Serializable {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder().append(status.value()).append(" ").append(statusText).append("\n");
-        headers.forEach((k, v) -> builder.append(k).append(": ").append(v).append("\n"));
+        headers.forEach((k, v) -> {
+            builder.append(k).append(": ");
+            for (String s : v) {
+                builder.append(s).append(',');
+            }
+            builder.deleteCharAt(builder.length() - 1).append('\n');
+        });
         builder.append(new String(body));
         return builder.toString();
     }

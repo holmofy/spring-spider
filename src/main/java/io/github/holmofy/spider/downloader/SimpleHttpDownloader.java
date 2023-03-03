@@ -50,7 +50,7 @@ public class SimpleHttpDownloader implements Downloader {
         return CrawlerResponse.builder()
                 .status(HttpStatus.valueOf(response.getStatusCode().value()))
                 .statusText(response.getStatusText())
-                .headers(response.getHeaders().toSingleValueMap())
+                .headers(response.getHeaders())
                 .body(response.getBody().readAllBytes())
                 .realUrl(request.getURI())
                 .build();
