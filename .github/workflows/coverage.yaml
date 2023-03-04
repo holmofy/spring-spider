@@ -6,6 +6,7 @@ on:
     paths:
       - 'src/**'
       - 'pom.xml'
+      - '.github/workflow/coverage.yaml'
 
 jobs:
   build:
@@ -19,6 +20,7 @@ jobs:
           distribution: 'adopt'
       - name: Run Coverage
         run: |
+          sudo mvn exec:java -e -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install-deps" && \
           mvn clean test 
 
       - name: Add coverage to PR
