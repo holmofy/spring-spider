@@ -1,5 +1,7 @@
 [![Build Status(https://github.com/holmofy/spring-spider/actions/workflows/package.yaml/badge.svg)](https://github.com/holmofy/spring-spider/actions/workflows/package.yaml/badge.svg)](https://repo1.maven.org/maven2/io/github/holmofy/spring-spider)
 
+![coverage](https://github.com/holmofy/spring-spider/actions/workflows/coverage.yaml/badge.svg)
+
 Spring Spider App Utility Library.
 
 # feature
