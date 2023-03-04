@@ -7,6 +7,8 @@ on:
       - 'src/**'
       - 'pom.xml'
       - '.github/workflow/coverage.yaml'
+  workflow_dispatch:
+    inputs:
 
 jobs:
   build:
