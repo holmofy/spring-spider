@@ -1,10 +1,12 @@
 package io.github.holmofy.spider.downloader;
 
+import io.github.holmofy.spider.Interceptor;
 import lombok.Data;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,6 +30,8 @@ public class DownloaderConfig {
     private int retryCount;
 
     private HttpHeaders headers = HttpHeaders.EMPTY;
+
+    private List<Interceptor> interceptors;
 
     static Map<String, String> buildHeaderMap(DownloaderConfig downloaderConfig, HttpHeaders headers) {
         HttpHeaders defaultHeaders = downloaderConfig == null ? HttpHeaders.EMPTY : downloaderConfig.getHeaders();

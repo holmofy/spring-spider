@@ -3,8 +3,6 @@ package io.github.holmofy.spider.downloader;
 import com.microsoft.playwright.*;
 import io.github.holmofy.spider.CrawlerRequest;
 import io.github.holmofy.spider.CrawlerResponse;
-import io.github.holmofy.spider.Downloader;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,13 +17,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Slf4j
-@AllArgsConstructor
-public class PlaywrightDownloader implements Downloader {
+public class PlaywrightDownloader extends AbstractDownloader {
 
-    DownloaderConfig downloaderConfig;
+    public PlaywrightDownloader(DownloaderConfig config) {
+        super(config);
+    }
 
     @Override
-    public CrawlerResponse download(CrawlerRequest request) {
+    public CrawlerResponse innerDownload(CrawlerRequest request) {
         try (Playwright playwright = Playwright.create();
              Browser browser = playwright.webkit().launch();
              BrowserContext context = browser.newContext()) {
@@ -49,12 +48,12 @@ public class PlaywrightDownloader implements Downloader {
             page.route(url, route -> {
                 Route.ResumeOptions options = new Route.ResumeOptions();
                 options.setMethod(request.getMethod().name());
-                options.setHeaders(DownloaderConfig.buildHeaderMap(downloaderConfig, request.getHeaders()));
+                options.setHeaders(DownloaderConfig.buildHeaderMap(config, request.getHeaders()));
                 options.setPostData(request.getBody());
                 route.resume(options);
             });
             page.navigate(url);
-            int retryCount = downloaderConfig == null ? 0 : downloaderConfig.getRetryCount();
+            int retryCount = config == null ? 0 : config.getRetryCount();
             while (retryCount-- > 0) {
                 if (isOk.get()) {
                     break;

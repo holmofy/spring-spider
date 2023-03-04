@@ -6,7 +6,7 @@
 
     <groupId>io.github.holmofy</groupId>
     <artifactId>spring-spider</artifactId>
-    <version>1.1.6</version>
+    <version>1.1.7</version>
 
     <name>spring-spider</name>
     <description>Spring Spider App Utility Library.</description>
@@ -136,6 +136,25 @@
                     <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                     <autoReleaseAfterClose>false</autoReleaseAfterClose>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
