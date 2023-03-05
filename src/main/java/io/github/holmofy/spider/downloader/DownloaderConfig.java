@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,13 @@ public class DownloaderConfig {
                 e -> String.join(";", e.getValue()),
                 (dh1, h2) -> h2
         ));
+    }
+
+    public void addInterceptor(Interceptor interceptor) {
+        if (interceptors == null) {
+            interceptors = new ArrayList<>();
+        }
+        interceptors.add(interceptor);
     }
 
 }

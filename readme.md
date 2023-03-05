@@ -19,7 +19,7 @@ Spring Spider App Utility Library.
 <dependency>
     <groupId>io.github.holmofy</groupId>
     <artifactId>spring-spider</artifactId>
-    <version>1.1.7</version>
+    <version>1.1.8</version>
 </dependency>
 ```
 
@@ -63,19 +63,33 @@ public class Example {
 ## playwright
 
 ```java
-Downloader playwright=Downloader.builder().playwright();
+public class Example {
+    public static void main(String[] args) {
+        Downloader playwright = Downloader.builder().playwright();
+        //...
+    }
+}
 ```
 
 ## raw http request
 
 ```java
-CrawlerRequest request=CrawlerRequest.parseRaw("""
-      POST https://login.example.com/api/users/login
-      Accept: application/json, text/plain, */*
-      Content-Type: application/x-www-form-urlencoded;charset=UTF-8
-      Cookie: 0bd17c6216775852668436416eaee18367962376820602ec6d9cbff1f07b4c
-      User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
-      
-      user=admin&password=123456
-      """);
+import io.github.holmofy.spider.CrawlerResponse;
+import io.github.holmofy.spider.Downloader;
+
+public class Example {
+    public static void main(String[] args) {
+        CrawlerRequest request = CrawlerRequest.parseRaw("""
+                POST https://login.example.com/api/users/login
+                Accept: application/json, text/plain, */*
+                Content-Type: application/x-www-form-urlencoded;charset=UTF-8
+                Cookie: 0bd17c6216775852668436416eaee18367962376820602ec6d9cbff1f07b4c
+                User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
+                      
+                user=admin&password=123456
+                """);
+        CrawlerResponse response = Downloader.builder().simple().download(request);
+        // ...
+    }
+}
 ```
