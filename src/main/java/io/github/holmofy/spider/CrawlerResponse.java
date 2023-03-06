@@ -1,11 +1,11 @@
 package io.github.holmofy.spider;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.SneakyThrows;
+import lombok.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +19,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -27,6 +28,11 @@ import java.nio.charset.StandardCharsets;
 public class CrawlerResponse implements Serializable {
 
     public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+
+    @Setter
+    private static Gson gson = new GsonBuilder()
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .create();
 
     @Getter
     @NonNull
@@ -60,6 +66,10 @@ public class CrawlerResponse implements Serializable {
 
     public String body(Charset charset) {
         return new String(body, charset);
+    }
+
+    public <T> T json(Type type) {
+        return gson.fromJson(body(), type);
     }
 
     public ReadContext jsonPath() {
@@ -131,7 +141,7 @@ public class CrawlerResponse implements Serializable {
             }
             builder.deleteCharAt(builder.length() - 1).append('\n');
         });
-        builder.append(new String(body));
+        builder.append('\n').append(new String(body));
         return builder.toString();
     }
 }

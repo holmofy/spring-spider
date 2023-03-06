@@ -1,5 +1,6 @@
 package io.github.holmofy.spider;
 
+import io.github.holmofy.spider.dto.GithubResp;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,10 +12,13 @@ public class DownloaderTest {
 
     @Test
     public void test_jsonpath() {
-        String current_user_url = downloader.download(CrawlerRequest.get("https://api.github.com/").build())
+        CrawlerResponse resp = downloader.download(CrawlerRequest.get("https://api.github.com/").build());
+        String current_user_url = resp
                 .jsonPath()
                 .read("$.current_user_url");
         Assert.assertEquals("https://api.github.com/user", current_user_url);
+        GithubResp githubResp = resp.json(GithubResp.class);
+        Assert.assertEquals("https://api.github.com/user/keys", githubResp.getKeysUrl());
     }
 
     @Test
