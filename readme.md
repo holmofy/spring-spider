@@ -12,6 +12,8 @@ Spring Spider App Utility Library.
 
 ## how to use
 
+0. Requirements: **spring boot 3.0, java17**
+
 1. add dependency
 
 ```xml
