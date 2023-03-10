@@ -4,9 +4,7 @@ import io.github.holmofy.spider.CrawlerRequest;
 import io.github.holmofy.spider.CrawlerResponse;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.client.ClientHttpRequest;
-import org.springframework.http.client.ClientHttpRequestFactory;
-import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.client.*;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
@@ -68,6 +66,17 @@ public class SimpleHttpDownloader extends AbstractDownloader {
 
         public SimpleHttpDownloader.SimpleHttpDownloaderBuilder requestFactory(final ClientHttpRequestFactory requestFactory) {
             this.requestFactory = requestFactory;
+            return this;
+        }
+
+        public SimpleHttpDownloader.SimpleHttpDownloaderBuilder requestFactory(SimpleClient clientType) {
+            if (clientType == SimpleClient.OK_HTTP) {
+                this.requestFactory = new OkHttp3ClientHttpRequestFactory();
+            } else if (clientType == SimpleClient.HTTP_COMPONENTS) {
+                this.requestFactory = new HttpComponentsClientHttpRequestFactory();
+            } else {
+                this.requestFactory = new SimpleClientHttpRequestFactory();
+            }
             return this;
         }
 
