@@ -3,6 +3,7 @@ package io.github.holmofy.spider.downloader;
 import com.microsoft.playwright.*;
 import io.github.holmofy.spider.CrawlerRequest;
 import io.github.holmofy.spider.CrawlerResponse;
+import io.github.holmofy.spider.Downloader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,14 +18,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class PlaywrightDownloader extends AbstractDownloader {
+public class PlaywrightDownloader implements Downloader {
+
+    protected DownloaderConfig config;
 
     public PlaywrightDownloader(DownloaderConfig config) {
-        super(config);
+        this.config = config;
     }
 
     @Override
-    public CrawlerResponse innerDownload(CrawlerRequest request) {
+    public CrawlerResponse download(CrawlerRequest request) {
         try (Playwright playwright = Playwright.create();
              Browser browser = playwright.webkit().launch();
              BrowserContext context = browser.newContext()) {

@@ -1,9 +1,9 @@
 package io.github.holmofy.spider.downloader;
 
-import io.github.holmofy.spider.Interceptor;
 import lombok.Data;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +32,7 @@ public class DownloaderConfig {
 
     private HttpHeaders headers = HttpHeaders.EMPTY;
 
-    private List<Interceptor> interceptors;
+    private List<ClientHttpRequestInterceptor> interceptors;
 
     static Map<String, String> buildHeaderMap(DownloaderConfig downloaderConfig, HttpHeaders headers) {
         HttpHeaders defaultHeaders = downloaderConfig == null ? HttpHeaders.EMPTY : downloaderConfig.getHeaders();
@@ -49,7 +49,7 @@ public class DownloaderConfig {
         ));
     }
 
-    public void addInterceptor(Interceptor interceptor) {
+    public void addInterceptor(ClientHttpRequestInterceptor interceptor) {
         if (interceptors == null) {
             interceptors = new ArrayList<>();
         }

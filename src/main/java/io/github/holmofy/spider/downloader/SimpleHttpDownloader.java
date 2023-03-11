@@ -2,6 +2,7 @@ package io.github.holmofy.spider.downloader;
 
 import io.github.holmofy.spider.CrawlerRequest;
 import io.github.holmofy.spider.CrawlerResponse;
+import io.github.holmofy.spider.Downloader;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.*;
@@ -9,18 +10,22 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 
-public class SimpleHttpDownloader extends AbstractDownloader {
+public class SimpleHttpDownloader implements Downloader {
 
+    protected DownloaderConfig config;
     protected ClientHttpRequestFactory requestFactory;
 
     private SimpleHttpDownloader(DownloaderConfig config, ClientHttpRequestFactory requestFactory) {
-        super(config);
+        this.config = config;
+        if (config != null && config.getInterceptors() != null) {
+            requestFactory = new InterceptingClientHttpRequestFactory(requestFactory, config.getInterceptors());
+        }
         this.requestFactory = requestFactory;
     }
 
     @Override
     @SneakyThrows
-    protected CrawlerResponse innerDownload(CrawlerRequest r) {
+    public CrawlerResponse download(CrawlerRequest r) {
         ClientHttpRequest chq = this.createRequest(r);
         try (ClientHttpResponse response = chq.execute()) {
             return toResponse(chq, response);
