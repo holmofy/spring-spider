@@ -58,7 +58,7 @@ public class CrawlerRequest implements Serializable {
         String[] lines;
         String body = null;
         if (bodyGapIndex > 0) {
-            body = rawRequest.substring(bodyGapIndex + 2);
+            body = rawRequest.substring(bodyGapIndex + 2).trim();
             lines = rawRequest.substring(0, bodyGapIndex + 1).split("[\r\n]+");
         } else {
             lines = rawRequest.split("[\r\n]+");

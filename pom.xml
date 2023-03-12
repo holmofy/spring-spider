@@ -6,7 +6,7 @@
 
     <groupId>io.github.holmofy</groupId>
     <artifactId>spring-spider</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
 
     <name>spring-spider</name>
     <description>Spring Spider App Utility Library.</description>
