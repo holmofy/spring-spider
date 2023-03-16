@@ -21,7 +21,7 @@ Spring Spider App Utility Library.
 <dependency>
     <groupId>io.github.holmofy</groupId>
     <artifactId>spring-spider</artifactId>
-    <version>1.2.3</version>
+    <version>1.2.4</version>
 </dependency>
 ```
 
