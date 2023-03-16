@@ -5,6 +5,7 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
 import com.jayway.jsonpath.spi.json.GsonJsonProvider;
+import com.jayway.jsonpath.spi.mapper.GsonMappingProvider;
 import lombok.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -33,7 +34,9 @@ public class CrawlerResponse implements Serializable {
     private static Gson gson = new Gson();
     @Setter
     private static Configuration configuration = Configuration.builder()
-            .jsonProvider(new GsonJsonProvider(gson)).build();
+            .jsonProvider(new GsonJsonProvider(gson))
+            .mappingProvider(new GsonMappingProvider(gson))
+            .build();
 
     @Getter
     @NonNull
