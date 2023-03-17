@@ -1,5 +1,6 @@
 package io.github.holmofy.spider;
 
+import io.github.holmofy.spider.utils.HttpParser;
 import lombok.Getter;
 import lombok.NonNull;
 import org.springframework.http.HttpHeaders;
@@ -53,8 +54,9 @@ public class CrawlerRequest implements Serializable {
 
     public static CrawlerRequest parseRaw(String rawRequest) {
         rawRequest = Objects.requireNonNull(rawRequest, "rawRequest must not be null").trim();
+
+        // split
         int bodyGapIndex = rawRequest.indexOf("\n\n");
-        CrawlerRequestBuilder builder = CrawlerRequest.builder();
         String[] lines;
         String body = null;
         if (bodyGapIndex > 0) {
@@ -64,22 +66,24 @@ public class CrawlerRequest implements Serializable {
             lines = rawRequest.split("[\r\n]+");
         }
         String[] requestLine = lines[0].split(" ");
-        builder.method(HttpMethod.valueOf(requestLine[0])).uri(URI.create(requestLine[1]));
-        for (int i = 1; i < lines.length; i++) {
-            String header = lines[i];
-            int colon = header.indexOf(":");
-            builder.header(header.substring(0, colon).trim(), header.substring(colon + 1).trim());
+
+        CrawlerRequestBuilder builder = CrawlerRequest.builder();
+        builder.method(HttpMethod.valueOf(requestLine[0]))
+                .uri(URI.create(requestLine[1]))
+                .headers(HttpParser.parseHeader(lines, 1, lines.length));
+
+        if (body == null) {
+            return builder.build();
         }
         MediaType contentType = DEFAULT_CONTENT_TYPE;
         Charset charset = DEFAULT_CHARSET;
-        if (builder.headers != null && body != null) {
+        if (builder.headers != null) {
             contentType = Objects.requireNonNullElse(builder.headers.getContentType(), contentType);
             charset = Objects.requireNonNullElse(contentType.getCharset(), charset);
         }
-        if (body != null) {
-            builder.body(body.getBytes(charset)).header(HttpHeaders.CONTENT_TYPE, contentType.toString());
-        }
-        return builder.build();
+        return builder.body(body.getBytes(charset))
+                .header(HttpHeaders.CONTENT_TYPE, contentType.toString())
+                .build();
     }
 
     public static CrawlerRequestBuilder builder() {
