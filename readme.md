@@ -17,11 +17,10 @@ Spring Spider App Utility Library.
 1. add dependency
 
 ```xml
-
 <dependency>
     <groupId>io.github.holmofy</groupId>
     <artifactId>spring-spider</artifactId>
-    <version>1.2.5</version>
+    <version>1.2.6</version>
 </dependency>
 ```
 

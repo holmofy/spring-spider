@@ -1,11 +1,8 @@
 package io.github.holmofy.spider;
 
 import com.google.gson.Gson;
-import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
-import com.jayway.jsonpath.spi.json.GsonJsonProvider;
-import com.jayway.jsonpath.spi.mapper.GsonMappingProvider;
 import lombok.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -32,11 +29,6 @@ public class CrawlerResponse implements Serializable {
 
     @Setter
     private static Gson gson = new Gson();
-    @Setter
-    private static Configuration configuration = Configuration.builder()
-            .jsonProvider(new GsonJsonProvider(gson))
-            .mappingProvider(new GsonMappingProvider(gson))
-            .build();
 
     @Getter
     @NonNull
@@ -82,7 +74,7 @@ public class CrawlerResponse implements Serializable {
 
     public ReadContext jsonPath(Charset charset) {
         if (jsonPath == null) {
-            jsonPath = JsonPath.using(configuration).parse(body(charset));
+            jsonPath = JsonPath.parse(body(charset));
         }
         return jsonPath;
     }

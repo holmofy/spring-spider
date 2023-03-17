@@ -1,6 +1,5 @@
 package io.github.holmofy.spider;
 
-import com.google.gson.JsonPrimitive;
 import io.github.holmofy.spider.dto.GithubResp;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,9 +13,8 @@ public class DownloaderTest {
     @Test
     public void test_jsonpath() {
         CrawlerResponse resp = downloader.download(CrawlerRequest.get("https://api.github.com/").build());
-        JsonPrimitive p = resp.jsonPath()
+        String current_user_url = resp.jsonPath()
                 .read("$.current_user_url");
-        String current_user_url = p.getAsString();
         Assert.assertEquals("https://api.github.com/user", current_user_url);
         GithubResp githubResp = resp.json(GithubResp.class);
         Assert.assertEquals("https://api.github.com/user/keys", githubResp.getKeysUrl());
