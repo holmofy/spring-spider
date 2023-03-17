@@ -82,7 +82,7 @@ public class CrawlerResponse implements Serializable {
 
     public ReadContext jsonPath(Charset charset) {
         if (jsonPath == null) {
-            jsonPath = JsonPath.parse(body(charset), configuration);
+            jsonPath = JsonPath.using(configuration).parse(body(charset));
         }
         return jsonPath;
     }
