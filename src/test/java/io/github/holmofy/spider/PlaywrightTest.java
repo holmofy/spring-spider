@@ -14,7 +14,7 @@ public class PlaywrightTest {
         DownloaderConfig config = new DownloaderConfig();
         config.setRetryCount(1);
         PlaywrightDownloader downloader = new PlaywrightDownloader(config);
-        CrawlerResponse response = downloader.download(CrawlerRequest.get("http://rst.hubei.gov.cn/bmdt/ztzl/ywzl/hbsszsydwgkzp/zpgg/index.shtml").build());
+        CrawlerResponse response = downloader.download(CrawlerRequest.get("https://www.baidu.com/").build());
         System.out.println(response.getStatus());
         System.out.println(response.getHeaders());
         System.out.println(response.body());

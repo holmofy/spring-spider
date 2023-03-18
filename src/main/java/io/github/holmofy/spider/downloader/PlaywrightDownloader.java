@@ -33,13 +33,22 @@ public class PlaywrightDownloader implements Downloader {
              BrowserContext context = browser.newContext()) {
             Page page = context.newPage();
             String url = request.getUri().toString();
+            // request data
+            page.route(url, route -> {
+                Route.ResumeOptions options = new Route.ResumeOptions();
+                options.setMethod(request.getMethod().name());
+                options.setHeaders(DownloaderConfig.buildHeaderMap(config, request.getHeaders()));
+                options.setPostData(request.getBody());
+                route.resume(options);
+            });
+            // response
             CrawlerResponse.CrawlerResponseBuilder response = CrawlerResponse.builder();
             AtomicBoolean isOk = new AtomicBoolean(false);
             page.onResponse(r -> {
                 log.trace("\n---> {} {}\n<=== {} {}",
                         r.request().method(), r.request().url(),
                         r.status(), r.statusText());
-                if (Objects.equals(r.url(), url)) {
+                if (Objects.equals(r.request().url(), url)) {
                     isOk.set(r.ok());
                     response.status(HttpStatus.valueOf(r.status()))
                             .statusText(r.statusText())
@@ -48,14 +57,8 @@ public class PlaywrightDownloader implements Downloader {
                             .body(r.body());
                 }
             });
-            page.route(url, route -> {
-                Route.ResumeOptions options = new Route.ResumeOptions();
-                options.setMethod(request.getMethod().name());
-                options.setHeaders(DownloaderConfig.buildHeaderMap(config, request.getHeaders()));
-                options.setPostData(request.getBody());
-                route.resume(options);
-            });
             page.navigate(url);
+            // retry
             int retryCount = config == null ? 0 : config.getRetryCount();
             while (retryCount-- > 0) {
                 if (isOk.get()) {
