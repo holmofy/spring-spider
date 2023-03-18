@@ -20,7 +20,7 @@ Spring Spider App Utility Library.
 <dependency>
     <groupId>io.github.holmofy</groupId>
     <artifactId>spring-spider</artifactId>
-    <version>1.3.1</version>
+    <version>1.3.2</version>
 </dependency>
 ```
 

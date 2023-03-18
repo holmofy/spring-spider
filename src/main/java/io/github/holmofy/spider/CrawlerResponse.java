@@ -10,6 +10,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.lang.Nullable;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -23,6 +25,7 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 @Builder
 public class CrawlerResponse implements Serializable {
@@ -54,7 +57,7 @@ public class CrawlerResponse implements Serializable {
     private transient XPath xPath;
 
     public String body() {
-        return new String(body, DEFAULT_CHARSET);
+        return new String(body, Objects.requireNonNullElse(getContentCharset(), DEFAULT_CHARSET));
     }
 
     public String body(Charset charset) {
@@ -66,7 +69,7 @@ public class CrawlerResponse implements Serializable {
     }
 
     public JsonPath jsonPath() {
-        return jsonPath(DEFAULT_CHARSET);
+        return jsonPath(Objects.requireNonNullElse(getContentCharset(), DEFAULT_CHARSET));
     }
 
     public JsonPath jsonPath(Charset charset) {
@@ -77,7 +80,7 @@ public class CrawlerResponse implements Serializable {
     }
 
     public Document jsoup() {
-        return jsoup(DEFAULT_CHARSET);
+        return jsoup(Objects.requireNonNullElse(getContentCharset(), DEFAULT_CHARSET));
     }
 
     public Document jsoup(Charset charset) {
@@ -92,6 +95,12 @@ public class CrawlerResponse implements Serializable {
             xPath = new XPath(body);
         }
         return xPath;
+    }
+
+    @Nullable
+    public Charset getContentCharset() {
+        MediaType contentType = headers.getContentType();
+        return contentType == null ? null : contentType.getCharset();
     }
 
     public static class JsonPath {
