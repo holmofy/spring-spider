@@ -161,7 +161,7 @@ public class CrawlerResponse implements Serializable {
             }
             builder.deleteCharAt(builder.length() - 1).append('\n');
         });
-        builder.append('\n').append(new String(body));
+        builder.append('\n').append(body());
         return builder.toString();
     }
 }
