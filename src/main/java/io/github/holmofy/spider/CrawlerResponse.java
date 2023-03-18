@@ -1,9 +1,12 @@
 package io.github.holmofy.spider;
 
-import com.google.gson.Gson;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.ReadContext;
-import lombok.*;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONPath;
+import com.alibaba.fastjson2.JSONReader;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.SneakyThrows;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.http.HttpHeaders;
@@ -21,14 +24,12 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 @Builder
 public class CrawlerResponse implements Serializable {
 
     public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-
-    @Setter
-    private static Gson gson = new Gson();
 
     @Getter
     @NonNull
@@ -50,10 +51,8 @@ public class CrawlerResponse implements Serializable {
     @Getter
     private transient URI realUrl;
 
-    private transient ReadContext jsonPath;
-
+    private transient JsonPath jsonPath;
     private transient Document jsoup;
-
     private transient XPath xPath;
 
     public String body() {
@@ -65,16 +64,16 @@ public class CrawlerResponse implements Serializable {
     }
 
     public <T> T json(Type type) {
-        return gson.fromJson(body(), type);
+        return JSON.parseObject(body(), type);
     }
 
-    public ReadContext jsonPath() {
+    public JsonPath jsonPath() {
         return jsonPath(DEFAULT_CHARSET);
     }
 
-    public ReadContext jsonPath(Charset charset) {
+    public JsonPath jsonPath(Charset charset) {
         if (jsonPath == null) {
-            jsonPath = JsonPath.parse(body(charset));
+            jsonPath = new JsonPath(JSONReader.of(body(charset)));
         }
         return jsonPath;
     }
@@ -91,18 +90,40 @@ public class CrawlerResponse implements Serializable {
     }
 
     public XPath xPath() {
-        return xPath(DEFAULT_CHARSET);
-    }
-
-    @SneakyThrows
-    public XPath xPath(Charset charset) {
         if (xPath == null) {
-            DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = builderFactory.newDocumentBuilder();
-            String s = new String(body, charset);
-            xPath = new XPath(builder.parse(new ByteArrayInputStream(body)));
+            xPath = new XPath(body);
         }
         return xPath;
+    }
+
+    public static class JsonPath {
+        private final JSONReader context;
+
+        public JsonPath(JSONReader context) {
+            this.context = context;
+        }
+
+        public JSONReader context() {
+            return context;
+        }
+
+        @SuppressWarnings("unchecked")
+        public <T> T read(String path) {
+            return (T) JSONPath.of(path).extract(context);
+        }
+
+        @SuppressWarnings("unchecked")
+        public <T> T read(String path, Type type) {
+            return (T) JSONPath.of(path, type).extract(context);
+        }
+
+        public boolean contains(String path) {
+            return JSONPath.of(path).contains(context);
+        }
+
+        public Map<String, Object> paths() {
+            return JSONPath.paths(context);
+        }
     }
 
     public static class XPath {
@@ -110,8 +131,11 @@ public class CrawlerResponse implements Serializable {
         private final org.w3c.dom.Document dom;
         private final javax.xml.xpath.XPath xpath;
 
-        public XPath(org.w3c.dom.Document dom) {
-            this.dom = dom;
+        @SneakyThrows
+        public XPath(byte[] body) {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = dbf.newDocumentBuilder();
+            this.dom = builder.parse(new ByteArrayInputStream(body));
             this.xpath = XPathFactory.newInstance().newXPath();
         }
 
@@ -125,6 +149,10 @@ public class CrawlerResponse implements Serializable {
             return (Node) xpath.evaluate(expression, dom, XPathConstants.NODE);
         }
 
+        @SneakyThrows
+        public <T> T select(String expression, Class<T> type) {
+            return xpath.compile(expression).evaluateExpression(dom, type);
+        }
     }
 
     @Override

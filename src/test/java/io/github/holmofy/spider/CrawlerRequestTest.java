@@ -17,7 +17,7 @@ public class CrawlerRequestTest {
                 Referer: https://www.fenbi.com/
                 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41
                                 
-                phone=18720232389&password=rOMcTIrSUFPP4z43fFq2Ag%2BPh2wl2m5WeFeQ4J0WLfPVx4z5cUopuravqVqfhMxbTAJFBVBkr08uP0OzCOXJIxcWfkcMtizoWj%2F%2BIwuxuzKCHyjfyfomN8AGp6nxG%2B2pnva37sPD%2BMPOy08zmX%2FoYpZ%2BH5ztv6k6d%2BE%2B9FvKNKo%3D
+                phone=18720232389&password=rOMcTIrSUFPP4z43fs
                 """);
 
         Assert.assertEquals(request.getMethod(), HttpMethod.POST);
