@@ -2,7 +2,6 @@ package io.github.holmofy.spider;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONPath;
-import com.alibaba.fastjson2.JSONReader;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -24,7 +23,6 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 
 @Builder
 public class CrawlerResponse implements Serializable {
@@ -73,7 +71,7 @@ public class CrawlerResponse implements Serializable {
 
     public JsonPath jsonPath(Charset charset) {
         if (jsonPath == null) {
-            jsonPath = new JsonPath(JSONReader.of(body(charset)));
+            jsonPath = new JsonPath(body(charset));
         }
         return jsonPath;
     }
@@ -97,14 +95,10 @@ public class CrawlerResponse implements Serializable {
     }
 
     public static class JsonPath {
-        private final JSONReader context;
+        private final String context;
 
-        public JsonPath(JSONReader context) {
+        public JsonPath(String context) {
             this.context = context;
-        }
-
-        public JSONReader context() {
-            return context;
         }
 
         @SuppressWarnings("unchecked")
@@ -117,13 +111,6 @@ public class CrawlerResponse implements Serializable {
             return (T) JSONPath.of(path, type).extract(context);
         }
 
-        public boolean contains(String path) {
-            return JSONPath.of(path).contains(context);
-        }
-
-        public Map<String, Object> paths() {
-            return JSONPath.paths(context);
-        }
     }
 
     public static class XPath {
